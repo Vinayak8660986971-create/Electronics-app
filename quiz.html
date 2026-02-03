@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Electronics Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .question {
+            margin-bottom: 20px;
+        }
+        ul.options {
+            list-style-type: disc; /* bullet points */
+            padding-left: 40px;
+        }
+        ul.options li {
+            margin: 5px 0;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+        }
+        ul.options li:hover {
+            background-color: #f0f0f0;
+        }
+        ul.options li.selected {
+            background-color: #d0e0ff;
+        }
+        #submitBtn {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Electronics Quiz</h1>
+    <div id="quizContainer"></div>
+    <button id="submitBtn">Submit Quiz</button>
+    <div id="result"></div>
+
+    <script>
+        const optionLabels = ["A", "B", "C", "D"]; // Labels for options
+        const userAnswers = {}; // store selected answers
+
+        async function loadQuiz() {
+            try {
+                const response = await fetch("http://127.0.0.1:5000/quiz"); // Flask backend URL
+                const quizData = await response.json();
+
+                const container = document.getElementById("quizContainer");
+
+                quizData.forEach((q, index) => {
+                    const qDiv = document.createElement("div");
+                    qDiv.classList.add("question");
+
+                    // Question text
+                    const questionText = document.createElement("p");
+                    questionText.innerHTML = `<strong>${index + 1}. ${q.question}</strong>`;
+                    qDiv.appendChild(questionText);
+
+                    // Options list
+                    const optionsList = document.createElement("ul");
+                    optionsList.classList.add("options");
+
+                    q.options.forEach((option, i) => {
+                        const li = document.createElement("li");
+                        li.textContent = `${optionLabels[i]}. ${option}`;
+
+                        // Handle selection
+                        li.addEventListener("click", () => {
+                            // Remove previous selection
+                            optionsList.querySelectorAll("li").forEach(item => item.classList.remove("selected"));
+                            li.classList.add("selected");
+
+                            // Store user answer
+                            userAnswers[index] = option;
+                        });
+
+                        optionsList.appendChild(li);
+                    });
+
+                    qDiv.appendChild(optionsList);
+                    container.appendChild(qDiv);
+                });
+
+                // Handle submit
+                const submitBtn = document.getElementById("submitBtn");
+                submitBtn.addEventListener("click", () => {
+                    let score = 0;
+                    quizData.forEach((q, index) => {
+                        if (userAnswers[index] === q.answer) {
+                            score++;
+                        }
+                    });
+                    const resultDiv = document.getElementById("result");
+                    resultDiv.textContent = `You scored ${score} out of ${quizData.length}`;
+                });
+
+            } catch (err) {
+                console.error("Failed to load quiz:", err);
+            }
+        }
+
+        loadQuiz();
+    </script>
+</body>
+</html>

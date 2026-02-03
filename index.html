@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Electronics Learning App</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="python" href="application.py">
+</head>
+<body>
+
+<h1>📘 Electronics Learning App</h1>
+
+<section>
+    <h2>📚 Topics</h2>
+    <button onclick="loadTopics()">Load Topics</button>
+    <ul id="topics"></ul>
+</section>
+
+<section>
+    <h2>⚡ Ohm's Law Calculator</h2>
+    <input type="number" id="voltage" placeholder="Voltage (V)">
+    <input type="number" id="resistance" placeholder="Resistance (Ω)">
+    <button onclick="calculate()">Calculate Current</button>
+    <p id="result"></p>
+</section>
+<section>
+    <h1>📝Welcome to Electronics Quiz</h1>
+    <button id="startQuizBtn">Start Quiz</button>
+    <script>
+        const startBtn = document.getElementById("startQuizBtn");
+
+        startBtn.addEventListener("click", () => {
+            // Open a new window for the quiz
+            window.open("quiz.html", "_blank"); 
+            // "_blank" opens it in a new tab/window
+        });
+    </script>
+    <div id="quiz"></div>
+</section>
+
+
+<script src="script.js"></script>
+</body>
+</html>
